@@ -1,0 +1,133 @@
+      <?php 
+      include "conexion.php";
+      $link=Conectarse();
+      $sql = sprintf("SELECT gto_noticias.Id_Usuario, gto_noticias.usu, gto_noticias.titulo, gto_noticias.sub_titulo, gto_noticias.etiqueta,gto_noticias.contenido, gto_noticias.imagen, gto_noticias.fecha FROM gto_noticias WHERE gto_noticias.usu= '%s'", $_SESSION["usu1"]);
+        $result = mysql_query($sql,$link);
+        echo mysql_error();
+        while($row = mysql_fetch_array($result))
+        {
+        for($i=0;$i<2;$i++)
+        {
+          
+          $ms_titulo     = $row["titulo"];
+          $ms_subtitulo  = $row["sub_titulo"];
+          $ms_descripcion= $row["contenido"];
+          $ms_etiqueta   = $row["etiqueta"];
+          $ms_imagen     = $row["imagen"];
+          $ms_fecha      = $row["fecha"];
+          $ms_usuario    = $row["usu"];
+          echo '<div class="contenedor"'."id = ".'cont'. ' style="position:absolute;left:70px; top:70px;">';
+          echo '<img class="imagen"'."id="."a".'>';
+          echo '<div class="texto">';
+            echo '<div class="subtitulo"><p>';
+            echo "$ms_subtitulo</p></div>";
+            echo '<div class="titulo">';
+            echo"<p><a href=#>$ms_titulo</a></p></div>";
+            echo'<div class="etiqueta"><a href="#">';
+            echo "$ms_etiqueta</a></div>";
+            
+            if(strlen($ms_descripcion)>100)
+            {
+            echo'<div class="info">';
+              $variabledesc = $ms_descripcion;
+              $titulomostrado = substr($variabledesc,0,100);
+              echo "<p id=desc>$titulomostrado"."..."."</p><br>
+            </p></div>";
+          echo "</div>";
+          }else{
+          echo'<div class="info">';
+            echo "<p id=desc>$ms_descripcion</p><br>
+          </p></div>";
+        echo "</div>";
+        }*/
+        ?>
+        <ul class="nev">
+          <div class="ax1"><p div class="a">Ok's</p></li></div>
+          <div class="ax2"><p div class="a">0</p></li></div>
+          <div class="ax3"><p div class="a">Guardar</p></li></div>
+          <div class="ax4"><p div class="a">compartir</p></li></div>
+        </ul>
+      </div> -->
+        
+      <?php
+      }
+      }
+      ?> 
+
+
+
+
+
+      if(isset($_SESSION['usu1']) && !empty($_SESSION['usu1'])) {
+        include "conexion.php";
+        $res_cout=0;
+        $link=Conectarse();
+        $sql = sprintf("SELECT MS_FEED FROM usuario WHERE usuario.usu= '%s'", $_SESSION["usu1"]);
+        $result = mysql_query($query);
+        echo mysql_error();
+        if(isset($result) && !empty($result)) {
+        while($row = mysql_fetch_array($result))
+        {
+        for($i=0;$i<2;$i++)
+        {
+        require_once 'rss_fetch.inc';
+        $url = $row["MS_FEED"];
+        $rss = fetch_rss($url);
+        if($rss){
+        $items = array_slice($rss->items, 0,6);
+        $cout  = $res_cout;
+        foreach ($items as $item ) {
+        $title = $item[title];
+        $url   = $item[link];
+        $images= $item[image];
+        $cate  = $item[category];
+        $cout  = $cout+1;
+        $res_cout=$cout;
+        $des   = $item[description];
+        echo '<div class="contenedor"'."id = $cout".'cont'. ' style="position:absolute;left:70px; top:70px;">';
+          echo '<img class="imagen"'."id=$cout"."a".'>';
+          echo '<div class="texto">';
+            echo '<div class="subtitulo"><p>SUBTITULO</p></div>';
+            echo '<div class="titulo">';
+            echo"<p><a href=$url>$title</a></p></div>";
+            echo'<div class="etiqueta"><a href="#">';
+            echo "$cate</a></div>";
+            
+            if(strlen($des)>100)
+            {
+            echo'<div class="info">';
+              $variabledesc = $des;
+              $titulomostrado = substr($variabledesc,0,100);
+              echo "<p id=desc$cout>$titulomostrado"."..."."</p><br>
+            </p></div>";
+          echo "</div>";
+          }else{
+          echo'<div class="info">';
+            echo "<p id=desc$cout>$des</p><br>
+          </p></div>";
+        echo "</div>";
+        }
+        ?>
+        <ul class="nev">
+          <div class="ax1"><p div class="a">Ok's</p></li></div>
+          <div class="ax2"><p div class="a">0</p></li></div>
+          <div class="ax3"><p div class="a">Guardar</p></li></div>
+          <div class="ax4"><p div class="a">compartir</p></li></div>
+        </ul>
+      </div>
+      <?php
+      }
+      }else{
+      
+      } //fin
+      include "desconectar.php";
+      }
+      }
+      }
+/*      else{
+        echo '<div id="alrt_rss">';
+        echo "¿No tienes RSS?<br>";
+        echo '<p><a href="#" onclick="javascript:openDialog4();">Suscríbete</a></p>';
+        echo '</div>';
+      }*/
+        }else{
